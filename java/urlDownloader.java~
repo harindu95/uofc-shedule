@@ -1,0 +1,64 @@
+import org.jsoup.Jsoup;
+import org.jsoup.Connection;
+import org.jsoup.Connection.Response;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+import java.util.Map;
+
+public class urlDownloader{
+
+    /*
+      An example url downloder using jsoup. Coz I couldnt
+      get jar loading to work, I simply extracted it.
+    */
+    public static void main(String[] args) {
+        String url = "http://www.google.ca";
+        String authentication_url = "https://cas.ucalgary.ca/cas/login?service=https://"
+            +"my.ucalgary.ca/psp/paprd/?cmd=start&ca.ucalgary.authent.ucid=true";
+
+        String username = "harindu.pitiduwa";
+        String password = "V@PC0nP4xohI";
+        String token = getToken();
+
+        try
+            {
+                Response loginForm = Jsoup.connect(authentication_url)
+                    .data("username",username)
+                    .data("password",password)
+                    .data("lt",token)
+                    .method(Connection.Method.POST)
+                    .execute();
+                System.out.println(loginForm.parse().toString());
+                // Map<String, String> cookies = loginForm.cookies();
+                
+                // String document_url = "https://csprd.ucalgary.ca/psc/csprd/EMPLOYEE/CAMPUS/c/SA_LEARNER_SERVICES.SSR_SSENRL_SCHD_W.GBL?Page=SSR_SS_WEEK&Action=A&ExactKeys=Y&EMPLID=30009665&TargetFrameName=None";
+                // Document document = Jsoup.connect(document_url)
+                //     .data("cookieexists", "true")
+                //     .cookies(loginForm.cookies())
+                //     .get();
+                // System.out.println(document);
+            }catch(Exception e)
+            {
+                System.out.println("IOERROR:");
+            }
+        // System.out.println("Main");
+        
+    }
+
+    static String getToken()
+    {
+        String url = "https://cas.ucalgary.ca/cas/login";
+        try{
+            Document document = Jsoup.connect(url).get();
+            // System.out.println(document.select("input[name=lt]"));
+            Element token =document.select("input[name=lt]").first();
+            System.out.println(token.attr("value"));
+            return token.attr("value");
+        }catch(IOException e){
+            return "";
+        }
+       
+    }
+}

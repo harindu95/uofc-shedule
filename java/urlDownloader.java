@@ -36,6 +36,7 @@ public class urlDownloader{
                 Connection cnct = submitForm(loginForm.parse());
                 Response authentication = cnct.execute();
                 shedule = downloadShedule(authentication.cookies());
+                System.out.println(shedule);
             }catch(Exception e)
             {
                 System.out.println("IOERROR:" + e.toString());
@@ -79,7 +80,6 @@ public class urlDownloader{
             .data("cookieexists", "true")
             .cookies(cookies)
             .get();
-        System.out.println(document);
         return document;
     }
 }
